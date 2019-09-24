@@ -6,12 +6,14 @@ class Api::ProductsController < ApplicationController
   # GET /products
   # GET /products.json
   def index
-    @products = Product.all
+    render json: Product.all
   end
 
   # GET /products/1
   # GET /products/1.json
-  def show; end
+  def show; 
+    render json: @product
+  end
 
   # POST /products
   # POST /products.json
@@ -19,7 +21,7 @@ class Api::ProductsController < ApplicationController
     @product = Product.new(product_params)
 
     if @product.save
-      render :show, status: :created, location: @product
+      render json: @product, status: :created, location: @product
     else
       render json: @product.errors, status: :unprocessable_entity
     end
@@ -29,7 +31,7 @@ class Api::ProductsController < ApplicationController
   # PATCH/PUT /products/1.json
   def update
     if @product.update(product_params)
-      render :show, status: :ok, location: @product
+      render json: @product, status: :ok, location: @product
     else
       render json: @product.errors, status: :unprocessable_entity
     end
@@ -50,6 +52,6 @@ class Api::ProductsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def product_params
-    params.fetch(:product, {})
+    params.require(:product).permit(:name, :price, :amout)
   end
 end
