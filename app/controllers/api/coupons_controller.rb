@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class Api::CouponsController < ApplicationController
-  before_action :set_coupon, only: [:show, :update, :destroy]
+  before_action :set_coupon, only: %i[show update destroy]
 
   # GET /coupons
   # GET /coupons.json
@@ -42,13 +44,14 @@ class Api::CouponsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_coupon
-      @coupon = Coupon.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def coupon_params
-      params.permit(:name, :type)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_coupon
+    @coupon = Coupon.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def coupon_params
+    params.permit(:name, :type)
+  end
 end
