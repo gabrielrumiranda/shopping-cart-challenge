@@ -4,12 +4,13 @@ class Api::CouponsController < ApplicationController
   # GET /coupons
   # GET /coupons.json
   def index
-    @coupons = Coupon.all
+    render json: Coupon.all
   end
 
   # GET /coupons/1
   # GET /coupons/1.json
   def show
+    render json: @coupon
   end
 
   # POST /coupons
@@ -18,7 +19,7 @@ class Api::CouponsController < ApplicationController
     @coupon = Coupon.new(coupon_params)
 
     if @coupon.save
-      render :show, status: :created, location: @coupon
+      render json: @coupon, status: :created, location: @coupon
     else
       render json: @coupon.errors, status: :unprocessable_entity
     end
@@ -28,7 +29,7 @@ class Api::CouponsController < ApplicationController
   # PATCH/PUT /coupons/1.json
   def update
     if @coupon.update(coupon_params)
-      render :show, status: :ok, location: @coupon
+      render json: @coupon, status: :ok, location: @coupon
     else
       render json: @coupon.errors, status: :unprocessable_entity
     end
@@ -48,6 +49,6 @@ class Api::CouponsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def coupon_params
-      params.fetch(:coupon, {})
+      params.permit(:name, :type)
     end
 end
