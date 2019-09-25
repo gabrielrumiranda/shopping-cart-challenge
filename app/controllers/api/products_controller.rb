@@ -11,7 +11,7 @@ class Api::ProductsController < ApplicationController
 
   # GET /products/1
   # GET /products/1.json
-  def show; 
+  def show
     render json: @product
   end
 
