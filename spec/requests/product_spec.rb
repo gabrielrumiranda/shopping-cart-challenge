@@ -1,102 +1,122 @@
+# frozen_string_literal: true
+
+# spec/requests/items_spec.rb
 require 'rails_helper'
 
-RSpec.describe 'Product API', type: :request do
-  let!(:products) { create_list(:product, 10) }
-  let(:product_id) { products.first.id }
+RSpec.describe 'Products API' do
+  let!(:cart) { create(:cart) }
+  let!(:products) { create_list(:product, 10, cart_id: cart.id) }
+  let(:cart_id) { cart.id }
+  let(:id) { products.first.id }
 
-  describe 'GET /api/products' do
-    before { get 'api/products' }
+  describe 'GET /api/cart/:cart_id/products' do
+    before { get "/api/cart/#{cart_id}/products" }
 
-    it 'returns products' do
-      # Note `json` is a custom helper to parse JSON responses
-      expect(json).not_to be_empty
-      expect(json.size).to eq(10)
-    end
-
-    it 'returns status code 200' do
-      expect(response).to have_http_status(200)
-    end
-  end
-
-  # Test suite for GET /todos/:id
-  describe 'GET api/product/:id' do
-    before { get "api/product/#{product_id}" }
-
-    context 'when the record exists' do
-      it 'returns the product' do
-        expect(json).not_to be_empty
-        expect(json['id']).to eq(product_id)
-      end
-
+    context 'when cart exists' do
       it 'returns status code 200' do
         expect(response).to have_http_status(200)
       end
+
+      it 'returns all cart products' do
+        puts JSON.parse(response.body)
+        expect(JSON.parse(response.body).size).to eq(10)
+      end
     end
 
-    context 'when the record does not exist' do
-      let(:product_id) { 100 }
+    context 'when cart does not exist' do
+      let(:cart_id) { 0 }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find product/)
+        expect(response.body).to match(/Couldn't find Cart/)
       end
     end
   end
 
-  # Test suite for POST /todos
-  describe 'POST /api/products' do
-    # valid payload
-    let(:valid_attributes) { { name: 'Banana', price: 10, amount: 2 } }
+  describe 'GET /api/cart/:cart_id/products/:id' do
+    before { get "/api/cart/#{cart_id}/products/#{id}" }
 
-    context 'when the request is valid' do
-      before { post 'api/products', params: valid_attributes }
-
-      it 'creates a product' do
-        expect(json['name']).to eq('Banana')
+    context 'when cart product exists' do
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
+
+      it 'returns the product' do
+        expect(JSON.parse(response.body)['id']).to eq(id)
+      end
+    end
+
+    context 'when cart product does not exist' do
+      let(:id) { 0 }
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find Product/)
+      end
+    end
+  end
+
+  describe 'POST /api/cart/:cart_id/products' do
+    let(:valid_attributes) { { name: 'Banana', price: 30, amount: 20 } }
+
+    context 'when request attributes are valid' do
+      before { post "/api/cart/#{cart_id}/products", params: valid_attributes }
 
       it 'returns status code 201' do
         expect(response).to have_http_status(201)
       end
     end
 
-    context 'when the request is invalid' do
-      before { post 'api/products', params: { title: 'test' } }
+    context 'when an invalid request' do
+      before { post "/api/cart/#{cart_id}/products", params: {} }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
       end
 
-      it 'returns a validation failure message' do
-        expect(response.body)
-          .to match(/Validation failed: Created by can't be blank/)
+      it 'returns a failure message' do
+        expect(response.body).to match(/Validation failed: Name can't be blank/)
       end
     end
   end
 
-  # Test suite for PUT /todos/:id
-  describe 'PUT api/product/:id' do
-    let(:valid_attributes) { { name: 'apple' } }
+  describe 'PUT api/cart/:cart_id/products/:id' do
+    let(:valid_attributes) { { name: 'Apple' } }
 
-    context 'when the record exists' do
-      before { put "api/product/#{product_id}", params: valid_attributes }
+    before { put "/api/cart/#{cart_id}/products/#{id}", params: valid_attributes }
 
-      it 'updates the record' do
-        expect(response.body).to be_empty
+    context 'when item exists' do
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
 
-      it 'returns status code 204' do
-        expect(response).to have_http_status(204)
+      it 'updates the product' do
+        updated_product = Product.find(id)
+        expect(updated_product.name).to match(/Apple/)
+      end
+    end
+
+    context 'when the product does not exist' do
+      let(:id) { 0 }
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find Product/)
       end
     end
   end
 
-  # Test suite for DELETE /todos/:id
-  describe 'DELETE api/product/:id' do
-    before { delete "api/product/#{product_id}" }
+  describe 'DELETE api/cart/:id' do
+    before { delete "/api/cart/#{cart_id}/products/#{id}" }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)

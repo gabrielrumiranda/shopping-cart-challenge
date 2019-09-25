@@ -7,5 +7,4 @@ class Cart < ApplicationRecord
   validates :user_token, presence: true
   validates :shipping_price, presence: true
   validates :total_price, presence: true
-
 end

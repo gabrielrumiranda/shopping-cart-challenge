@@ -2,6 +2,8 @@
 
 Rails.application.routes.draw do
   namespace :api do
-    resources :products
+    resources :cart do
+      resources :products
+    end
   end
 end

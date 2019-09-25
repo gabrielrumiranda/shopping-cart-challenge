@@ -13,10 +13,15 @@ class Api::ProductsController < ApplicationController
   end
 
   def create
-    @product = @cart.products.create!(product_params)
+    @product = Product.find_by(name: product_params['name'])
 
+    if @product
+      @product.amount += 1
+    else
+      @product = @cart.products.create!(product_params)
+    end
     if @product.save
-      render json: @product, status: :created, location: @product
+      render json: @product, status: :created
     else
       render json: @product.errors, status: :unprocessable_entity
     end
@@ -24,7 +29,7 @@ class Api::ProductsController < ApplicationController
 
   def update
     if @product.update(product_params)
-      render json: @product, status: :ok, location: @product
+      render json: @product, status: :ok
     else
       render json: @product.errors, status: :unprocessable_entity
     end
