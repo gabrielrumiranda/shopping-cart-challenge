@@ -67,7 +67,6 @@ RSpec.describe 'Products API' do
       before { post "/api/cart/#{cart_id}/coupons", params: valid_attributes }
 
       it 'returns status code 201' do
-        puts response.body
         expect(response).to have_http_status(201)
       end
     end
@@ -81,6 +80,21 @@ RSpec.describe 'Products API' do
 
       it 'returns a failure message' do
         expect(response.body).to match(/can't be blank/)
+      end
+    end
+
+    context 'when coupon type is not acceptable' do
+      before do 
+        valid_attributes[:coupon_type] = 'INVALID TYPE'
+        post "/api/cart/#{cart_id}/coupons", params: valid_attributes
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a failure message' do
+        expect(response.body).to match(/Validation failed: Coupon type INVALID TYPE is not a valid type/)
       end
     end
   end
