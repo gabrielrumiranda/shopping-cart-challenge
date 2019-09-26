@@ -13,10 +13,10 @@ class Api::ProductsController < ApplicationController
   end
 
   def create
-    @product = Product.find_by(name: product_params['name'])
+    @product = Product.find_by(name: product_params[:name])
 
     if @product
-      @product.amount += 1
+      @product.amount += product_params[:amount].to_i
     else
       @product = @cart.products.create!(product_params)
     end
@@ -50,6 +50,6 @@ class Api::ProductsController < ApplicationController
   end
 
   def product_params
-    params.permit(:name, :price, :amount)
+    params.permit(:name, :price, :shipping_price, :amount)
   end
 end

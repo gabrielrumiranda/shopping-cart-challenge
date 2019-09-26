@@ -18,7 +18,6 @@ RSpec.describe 'Products API' do
       end
 
       it 'returns all cart products' do
-        puts JSON.parse(response.body)
         expect(JSON.parse(response.body).size).to eq(10)
       end
     end
@@ -63,13 +62,34 @@ RSpec.describe 'Products API' do
   end
 
   describe 'POST /api/cart/:cart_id/products' do
-    let(:valid_attributes) { { name: 'Banana', price: 30, amount: 20 } }
+    let(:valid_attributes) { { name: 'Banana', price: 30, shipping_price: 10.2, amount: 20 } }
 
     context 'when request attributes are valid' do
-      before { post "/api/cart/#{cart_id}/products", params: valid_attributes }
+      context 'when not have a product with requested name' do
+        before { post "/api/cart/#{cart_id}/products", params: valid_attributes }
 
-      it 'returns status code 201' do
-        expect(response).to have_http_status(201)
+        it 'returns status code 201' do
+          expect(response).to have_http_status(201)
+        end
+      end
+
+      context 'when have a product with requested name' do
+        before do
+          valid_attributes[:name] = products.first.name
+          post "/api/cart/#{cart_id}/products", params: valid_attributes
+        end
+
+        it 'returns status code 201' do
+          expect(response).to have_http_status(201)
+        end
+
+        it 'amount equal the old amount plus the requested product amount' do
+          product_amount = JSON.parse(response.body)['amount']
+          expect_amount = valid_attributes[:amount] + products.first.amount
+
+          expect(product_amount).to eql(expect_amount)
+        end
+
       end
     end
 
