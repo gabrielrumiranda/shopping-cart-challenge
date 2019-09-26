@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# spec/requests/items_spec.rb
 require 'rails_helper'
 
 RSpec.describe 'Products API' do
@@ -89,7 +88,6 @@ RSpec.describe 'Products API' do
 
           expect(product_amount).to eql(expect_amount)
         end
-
       end
     end
 

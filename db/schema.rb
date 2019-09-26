@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 2019_09_25_145347) do
 
   create_table "coupons", force: :cascade do |t|
     t.string "name"
-    t.string "type"
+    t.string "coupon_type"
     t.bigint "cart_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

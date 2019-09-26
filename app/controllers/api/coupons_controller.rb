@@ -1,57 +1,50 @@
 # frozen_string_literal: true
 
 class Api::CouponsController < ApplicationController
-  before_action :set_coupon, only: %i[show update destroy]
+  before_action :set_cart
+  before_action :set_cart_coupon, only: %i[show update destroy]
 
-  # GET /coupons
-  # GET /coupons.json
   def index
-    render json: Coupon.all
+    render json: @cart.coupons
   end
 
-  # GET /coupons/1
-  # GET /coupons/1.json
   def show
     render json: @coupon
   end
 
-  # POST /coupons
-  # POST /coupons.json
   def create
-    @coupon = Coupon.new(coupon_params)
+    @coupon = @cart.coupons.create!(coupon_params)
 
     if @coupon.save
-      render json: @coupon, status: :created, location: @coupon
+      render json: @coupon, status: :created
     else
       render json: @coupon.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /coupons/1
-  # PATCH/PUT /coupons/1.json
   def update
     if @coupon.update(coupon_params)
-      render json: @coupon, status: :ok, location: @coupon
+      render json: @coupon, status: :ok
     else
       render json: @coupon.errors, status: :unprocessable_entity
     end
   end
 
-  # DELETE /coupons/1
-  # DELETE /coupons/1.json
   def destroy
     @coupon.destroy
   end
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_coupon
-    @coupon = Coupon.find(params[:id])
+  def set_cart
+    @cart = Cart.find(params[:cart_id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+  def set_cart_coupon
+    @coupon = @cart.coupons.find_by!(id: params[:id]) if @cart
+  end
+
   def coupon_params
-    params.permit(:name, :type)
+    params.permit(:name, :coupon_type)
   end
 end
