@@ -5,6 +5,6 @@ class Cart < ApplicationRecord
   has_many :coupons, dependent: :destroy
 
   validates :user_token, presence: true
-  validates :shipping_price, presence: true
-  validates :total_price, presence: true
+  attribute :shipping_price, default: 0
+  attribute :total_price, default: 0
 end
