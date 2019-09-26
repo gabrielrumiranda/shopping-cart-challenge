@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2019_09_25_145347) do
   create_table "carts", force: :cascade do |t|
     t.float "shipping_price"
     t.float "total_price"
+    t.float "subtotal_price"
     t.string "user_token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -35,7 +36,6 @@ ActiveRecord::Schema.define(version: 2019_09_25_145347) do
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.integer "price"
-    t.float "shipping_price"
     t.integer "amount"
     t.bigint "cart_id"
     t.datetime "created_at", precision: 6, null: false

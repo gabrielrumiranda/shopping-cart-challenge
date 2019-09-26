@@ -7,4 +7,5 @@ class Cart < ApplicationRecord
   validates :user_token, presence: true
   attribute :shipping_price, default: 0
   attribute :total_price, default: 0
+  attribute :subtotal_price, default: 0
 end

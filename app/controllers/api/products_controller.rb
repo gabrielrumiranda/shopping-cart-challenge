@@ -50,6 +50,6 @@ class Api::ProductsController < ApplicationController
   end
 
   def product_params
-    params.permit(:name, :price, :shipping_price, :amount)
+    params.permit(:name, :price, :amount)
   end
 end

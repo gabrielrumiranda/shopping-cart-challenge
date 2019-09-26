@@ -20,8 +20,7 @@ class Api::CartsController < ApplicationController
   end
 
   def show
-    puts @cart.products
-    render json: Cart.left_joins(:products).select('carts.*, products.*').find(params[:id])
+    render json: Product.where(cart_id: params[:id])
   end
 
   def update
