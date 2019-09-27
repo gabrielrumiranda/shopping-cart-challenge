@@ -8,8 +8,8 @@ RSpec.describe 'Products API' do
   let(:cart_id) { cart.id }
   let(:id) { coupons.first.id }
 
-  describe 'GET /api/cart/:cart_id/coupons' do
-    before { get "/api/cart/#{cart_id}/coupons" }
+  describe 'GET /api/carts/:cart_id/coupons' do
+    before { get "/api/carts/#{cart_id}/coupons" }
 
     context 'when cart exists' do
       it 'returns status code 200' do
@@ -34,8 +34,8 @@ RSpec.describe 'Products API' do
     end
   end
 
-  describe 'GET /api/cart/:cart_id/coupons/:id' do
-    before { get "/api/cart/#{cart_id}/coupons/#{id}" }
+  describe 'GET /api/carts/:cart_id/coupons/:id' do
+    before { get "/api/carts/#{cart_id}/coupons/#{id}" }
 
     context 'when cart product exists' do
       it 'returns status code 200' do
@@ -60,11 +60,11 @@ RSpec.describe 'Products API' do
     end
   end
 
-  describe 'POST /api/cart/:cart_id/products' do
+  describe 'POST /api/carts/:cart_id/products' do
     let(:valid_attributes) { { name: 'Coupon A', coupon_type: 'PERCENTUAL_COUPON' } }
 
     context 'when request attributes are valid' do
-      before { post "/api/cart/#{cart_id}/coupons", params: valid_attributes }
+      before { post "/api/carts/#{cart_id}/coupons", params: valid_attributes }
 
       it 'returns status code 201' do
         expect(response).to have_http_status(201)
@@ -72,7 +72,7 @@ RSpec.describe 'Products API' do
     end
 
     context 'when an invalid request' do
-      before { post "/api/cart/#{cart_id}/coupons", params: {} }
+      before { post "/api/carts/#{cart_id}/coupons", params: {} }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -86,7 +86,7 @@ RSpec.describe 'Products API' do
     context 'when coupon type is not acceptable' do
       before do 
         valid_attributes[:coupon_type] = 'INVALID TYPE'
-        post "/api/cart/#{cart_id}/coupons", params: valid_attributes
+        post "/api/carts/#{cart_id}/coupons", params: valid_attributes
       end
 
       it 'returns status code 422' do
@@ -99,10 +99,10 @@ RSpec.describe 'Products API' do
     end
   end
 
-  describe 'PUT api/cart/:cart_id/coupons/:id' do
+  describe 'PUT api/carts/:cart_id/coupons/:id' do
     let(:valid_attributes) { { name: 'Coupon C' } }
 
-    before { put "/api/cart/#{cart_id}/coupons/#{id}", params: valid_attributes }
+    before { put "/api/carts/#{cart_id}/coupons/#{id}", params: valid_attributes }
 
     context 'when item exists' do
       it 'returns status code 200' do
@@ -128,8 +128,8 @@ RSpec.describe 'Products API' do
     end
   end
 
-  describe 'DELETE api/cart/:id' do
-    before { delete "/api/cart/#{cart_id}/coupons/#{id}" }
+  describe 'DELETE api/carts/:id' do
+    before { delete "/api/carts/#{cart_id}/coupons/#{id}" }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)

@@ -39,7 +39,7 @@ class CartService
   def calculate_shipping_price
     return @cart.shipping_price = 0 if @cart.subtotal_price >= @cart.free_shipping_limit
 
-    max_amount = calculate_max_amount
+    max_amount = calculate_max_amount || 0
     return @cart.shipping_price = 30 if max_amount <= SIMPLE_SHIPPING_LIMIT
 
     exceeded_amount = max_amount - SIMPLE_SHIPPING_LIMIT
