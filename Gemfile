@@ -27,8 +27,7 @@ group :development do
 end
 
 group :test do
-  gem 'codecov', '~> 0.1.14', require: false
-  gem 'simplecov', require: false
+ 
   gem 'rubocop-rails'
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
@@ -41,3 +40,5 @@ group :test do
 end
 
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+gem 'codecov', '~> 0.1.14', require: false
+gem 'simplecov', require: false
