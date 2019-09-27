@@ -11,9 +11,10 @@ before_install:
 env:
   - CODECOV_TOKEN=045ddea2-5388-4b2b-835b-f973e0e3d391
 before_script:
+  - psql -c "CREATE USER shoppingcart WITH PASSWORD 'password';" -U postgres
   - bundle exec rake db:create
   - bundle exec rake db:migrate
 script:
-  - bundle exec rake spec
+  - bundle exec rspec
 after_success:
   - codecov
