@@ -61,7 +61,7 @@ RSpec.describe 'Products API' do
   end
 
   describe 'POST /api/carts/:cart_id/products' do
-    let(:valid_attributes) { { name: 'Banana', price: 30, shipping_price: 10.2, amount: 20 } }
+    let(:valid_attributes) { { name: 'Banana', price: 30, amount: 20 } }
 
     context 'when request attributes are valid' do
       context 'when not have a product with requested name' do
