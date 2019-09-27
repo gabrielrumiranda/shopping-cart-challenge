@@ -1,4 +1,4 @@
-class CartsService
+class CartService
 
   FREE_SHIPPING_LIMIT = 400
   SIMPLE_SHIPPING_LIMIT = 10
@@ -8,7 +8,8 @@ class CartsService
   COUPON_A_PERCENTAGE = 0.3
   COUPON_FOO_DISCONT = 100
   COUPON_C_FREE_SHIPPING_LIMIT = 300.50
-  attr_acessor :cart
+
+  attr_accessor :cart
 
   def initialize(cart_id)
     @cart = Cart.find(cart_id)
@@ -23,7 +24,12 @@ class CartsService
   end
 
   def calculate_sub_total_price
-    @cart.subtotal_price = Product.where(cart_id: @cart.id).sum('price')
+    @cart.subtotal_price = 0
+    Product.where(cart_id: @cart.id).each do |product| 
+      @cart.subtotal_price += product.amount * product.price
+    end
+    @cart.total_price = @cart.subtotal_price
+    @cart.save
   end
 
   def calculate_max_amount
@@ -31,7 +37,7 @@ class CartsService
   end
 
   def calculate_shipping_price
-    return @cart.shipping_price = 0 if @cart.subtotal_price >= FREE_SHIPPING_LIMIT
+    return @cart.shipping_price = 0 if @cart.subtotal_price >= @cart.free_shipping_limit
 
     max_amount = calculate_max_amount
     return @cart.shipping_price = 30 if max_amount <= SIMPLE_SHIPPING_LIMIT
@@ -40,24 +46,35 @@ class CartsService
     shipping_price_aditional = (exceeded_amount / EXCEEDED_AMOUNT_THRESHOLD)
     shipping_price_aditional *= EXCEEDED_AMOUNT_PRICE
     shipping_price = SIMPLE_SHIPPING_PRICE + shipping_price_aditional
-
     @cart.shipping_price = shipping_price
+
+    @cart.save
+  end
+
+  def aplly_coupon (coupon_name)
+    case coupon_name
+    when 'A'
+      @cart.total_price -= (@cart.subtotal_price * COUPON_A_PERCENTAGE)
+    when 'Foo'
+      @cart.total_price -= COUPON_FOO_DISCONT
+      @cart.total_price = 0 if @cart.total_price < 0
+    when 'C'
+      @cart.free_shipping_limit = COUPON_C_FREE_SHIPPING_LIMIT
+      @cart.shipping_price = 0 if @cart.total_price >= @cart.free_shipping_limit
+    end
+    @cart.save
   end
 
   def aplly_coupons
-    Coupon.where(cart_id: @cart.id, name: 'A').find_each do |coupon|
-      @cart.total_price -= (@cart.subtotal_price * COUPON_A_PERCENTAGE)
+    Coupon.where(cart_id: @cart.id).each do |coupon|
+      aplly_coupon(coupon.name)
     end
+  end
 
-    Coupon.where(cart_id: @cart.id, name: 'FOO').find_each do |coupon|
-      @cart.total_price -= @cart.subtotal_price - COUPON_FOO_DISCONT
-    end
-
-    coupon_c = Coupon.where(cart_id: @cart.id, name: 'C')
-    if coupon_c
-      if @cart.total_price >= COUPON_C_FREE_SHIPPING_LIMIT
-        @cart.shipping_price = 0
-      end
-    end
+  def calculations
+    calculate_sub_total_price
+    calculate_shipping_price
+    aplly_coupons
+    @cart
   end
 end

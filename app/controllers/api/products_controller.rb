@@ -13,14 +13,9 @@ class Api::ProductsController < ApplicationController
   end
 
   def create
-    @product = Product.find_by(name: product_params[:name])
-
-    if @product
-      @product.amount += product_params[:amount].to_i
-    else
-      @product = @cart.products.create!(product_params)
-    end
+    @product = ProductService.create(product_params, params[:cart_id])
     if @product.save
+      ProductService.update_cart_prices(@product)
       render json: @product, status: :created
     else
       render json: @product.errors, status: :unprocessable_entity
@@ -29,6 +24,7 @@ class Api::ProductsController < ApplicationController
 
   def update
     if @product.update(product_params)
+      ProductService.update_cart_prices(@product)
       render json: @product, status: :ok
     else
       render json: @product.errors, status: :unprocessable_entity

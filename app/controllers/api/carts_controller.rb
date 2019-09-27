@@ -20,7 +20,7 @@ class Api::CartsController < ApplicationController
   end
 
   def show
-    render json: Product.where(cart_id: params[:id])
+    render json: Cart.where(id: params[:id])
   end
 
   def update
