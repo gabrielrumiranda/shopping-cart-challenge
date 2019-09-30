@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 COUPON_TYPES = %w[PERCENTUAL_COUPON FIXED_COUPON FREE_SHIPPING].freeze
 
 FactoryBot.define do

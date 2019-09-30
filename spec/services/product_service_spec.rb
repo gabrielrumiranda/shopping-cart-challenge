@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'rails_helper'
 
@@ -48,7 +49,11 @@ RSpec.describe 'Products Service' do
     subject(:update_cart_prices) { ProductService.update_cart_prices(product) }
 
     context 'when cart is empty' do
-      before { product.save }
+      before do
+        product.price = 1
+        product_amount = 5
+        cart.products << product
+      end 
       it 'returns a cart with prices updates' do
         expect(update_cart_prices.subtotal_price).to eql (product.price * product.amount)
       end

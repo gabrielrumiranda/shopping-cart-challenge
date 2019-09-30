@@ -1,5 +1,6 @@
-class CartService
+# frozen_string_literal: true
 
+class CartService
   FREE_SHIPPING_LIMIT = 400
   SIMPLE_SHIPPING_LIMIT = 10
   SIMPLE_SHIPPING_PRICE = 30
@@ -15,47 +16,44 @@ class CartService
     @cart = Cart.find(cart_id)
   end
 
-  def list_products
-    Product.where(cart_id: @cart.id)
-  end
-
-  def list_coupons
-    Coupon.where(cart_id: @cart.id)
-  end
-
   def calculate_sub_total_price
     @cart.subtotal_price = 0
-    Product.where(cart_id: @cart.id).each do |product| 
+    Product.where(cart_id: @cart.id).each do |product|
       @cart.subtotal_price += product.amount * product.price
     end
     @cart.total_price = @cart.subtotal_price
     @cart.save
+    @cart.subtotal_price
   end
 
   def calculate_max_amount
-    Product.where(cart_id: @cart.id).maximum('amount')
+    Product.where(cart_id: @cart.id).maximum('amount') || 0
   end
 
   def calculate_shipping_price
-    return @cart.shipping_price = 0 if @cart.subtotal_price >= @cart.free_shipping_limit
-
     max_amount = calculate_max_amount || 0
-    return @cart.shipping_price = 30 if max_amount <= SIMPLE_SHIPPING_LIMIT
-
-    exceeded_amount = max_amount - SIMPLE_SHIPPING_LIMIT
-    shipping_price_aditional = (exceeded_amount / EXCEEDED_AMOUNT_THRESHOLD)
-    shipping_price_aditional *= EXCEEDED_AMOUNT_PRICE
-    shipping_price = SIMPLE_SHIPPING_PRICE + shipping_price_aditional
-    @cart.shipping_price = shipping_price
-
+    if calculate_sub_total_price >= @cart.free_shipping_limit
+      @cart.shipping_price = 0
+    elsif max_amount <= SIMPLE_SHIPPING_LIMIT
+      @cart.shipping_price = 30
+    else
+      exceeded_amount = max_amount - SIMPLE_SHIPPING_LIMIT
+      shipping_price_aditional = (exceeded_amount / EXCEEDED_AMOUNT_THRESHOLD)
+      shipping_price_aditional *= EXCEEDED_AMOUNT_PRICE
+      shipping_price = SIMPLE_SHIPPING_PRICE + shipping_price_aditional
+      @cart.shipping_price = shipping_price
+    end
     @cart.save
+    @cart.shipping_price
   end
 
-  def aplly_coupon (coupon_name)
+  def aplly_coupon(coupon_name)
+    calculate_sub_total_price
+    calculate_shipping_price
     case coupon_name
     when 'A'
       @cart.total_price -= (@cart.subtotal_price * COUPON_A_PERCENTAGE)
-    when 'Foo'
+    when 'FOO'
       @cart.total_price -= COUPON_FOO_DISCONT
       @cart.total_price = 0 if @cart.total_price.negative?
     when 'C'
@@ -63,6 +61,7 @@ class CartService
       @cart.shipping_price = 0 if @cart.total_price >= @cart.free_shipping_limit
     end
     @cart.save
+    @cart
   end
 
   def aplly_coupons

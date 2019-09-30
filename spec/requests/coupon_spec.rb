@@ -84,7 +84,7 @@ RSpec.describe 'Products API' do
     end
 
     context 'when coupon type is not acceptable' do
-      before do 
+      before do
         valid_attributes[:coupon_type] = 'INVALID TYPE'
         post "/api/carts/#{cart_id}/coupons", params: valid_attributes
       end

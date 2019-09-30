@@ -47,18 +47,16 @@ RSpec.describe 'Carts API' do
   end
 
   describe 'POST /api/carts/' do
-    let(:valid_attributes) { { user_token: '12313112'} }
-
     context 'when request attributes are valid' do
-        before { post "/api/carts/", params: valid_attributes }
+      before { post '/api/carts/', headers: { 'HTTP_USER_TOKEN' => '12312312' } }
 
-        it 'returns status code 201' do
-          expect(response).to have_http_status(201)
-        end
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
       end
+    end
 
     context 'when an invalid request' do
-      before { post "/api/carts/", params: {} }
+      before { post '/api/carts/', params: {} }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -71,9 +69,7 @@ RSpec.describe 'Carts API' do
   end
 
   describe 'PUT api/carts/:cart_id/' do
-    let(:valid_attributes) { { user_token: '12312' } }
-
-    before { put "/api/carts/#{cart_id}/", params: valid_attributes }
+    before { put "/api/carts/#{cart_id}/", headers: { 'HTTP_USER_TOKEN' => '12312' } }
 
     context 'when item exists' do
       it 'returns status code 200' do

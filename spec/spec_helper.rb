@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 require 'simplecov'
 SimpleCov.start 'rails' do
-  add_filter "/test/"
+  add_filter '/test/'
 end
 if ENV['CI'] == 'true'
   require 'codecov'
@@ -18,5 +19,4 @@ RSpec.configure do |config|
   end
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
-
 end
