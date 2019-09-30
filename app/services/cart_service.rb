@@ -57,7 +57,7 @@ class CartService
       @cart.total_price -= (@cart.subtotal_price * COUPON_A_PERCENTAGE)
     when 'Foo'
       @cart.total_price -= COUPON_FOO_DISCONT
-      @cart.total_price = 0 if @cart.total_price < 0
+      @cart.total_price = 0 if @cart.total_price.negative?
     when 'C'
       @cart.free_shipping_limit = COUPON_C_FREE_SHIPPING_LIMIT
       @cart.shipping_price = 0 if @cart.total_price >= @cart.free_shipping_limit
