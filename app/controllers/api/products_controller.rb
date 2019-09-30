@@ -1,0 +1,51 @@
+# frozen_string_literal: true
+
+class Api::ProductsController < ApplicationController
+  before_action :set_cart
+  before_action :set_cart_product, only: %i[show update destroy]
+
+  def index
+    render json: @cart.products
+  end
+
+  def show
+    render json: @product
+  end
+
+  def create
+    @product = ProductService.create(product_params, params[:cart_id])
+    if @product.save
+      ProductService.update_cart_prices(@product)
+      render json: @product, status: :created
+    else
+      render json: @product.errors, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if @product.update(product_params)
+      ProductService.update_cart_prices(@product)
+      render json: @product, status: :ok
+    else
+      render json: @product.errors, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @product.destroy
+  end
+
+  private
+
+  def set_cart
+    @cart = Cart.find(params[:cart_id])
+  end
+
+  def set_cart_product
+    @product = @cart.products.find_by!(id: params[:id]) if @cart
+  end
+
+  def product_params
+    params.permit(:name, :price, :amount)
+  end
+end
