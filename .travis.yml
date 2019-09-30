@@ -1,0 +1,21 @@
+language: ruby
+rvm:
+  - 2.6.0
+services:
+  - postgresql
+before_install:
+  - gem update --system
+  - gem install bundler
+  - gem install rails
+  - bundle install
+env:
+  - CODECOV_TOKEN=045ddea2-5388-4b2b-835b-f973e0e3d391
+before_script:
+  - psql -c "CREATE USER shoppingcart WITH PASSWORD 'password';" -U postgres
+  - psql -c "ALTER USER shoppingcart CREATEDB;" -U postgres
+  - bundle exec rake db:create
+  - bundle exec rake db:migrate
+script:
+  - bundle exec rspec
+after_success:
+  - codecov

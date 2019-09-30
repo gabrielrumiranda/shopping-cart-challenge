@@ -1,16 +1,16 @@
+# frozen_string_literal: true
+
 class Api::CartsController < ApplicationController
-  before_action :set_cart, only: [:show, :update, :destroy]
+  before_action :set_cart, only: %i[show update destroy]
 
   def index
     @carts = Cart.all
-    # @carts = Cart.left_joins(:products).select('products.*').group_by(&:cart_id)
-    # @carts = Product.joins(:cart).select('products.*').group_by(&:cart_id).all
-    # puts @carts.products
     render json: @carts
   end
 
   def create
-    @cart = Cart.create!(cart_params)
+    user_token = { user_token: request.headers['HTTP_USER_TOKEN'] }
+    @cart = Cart.create!(user_token)
 
     if @cart.save
       render json: @cart, status: :created
@@ -24,7 +24,8 @@ class Api::CartsController < ApplicationController
   end
 
   def update
-    if @cart.update(cart_params)
+    user_token = { user_token: request.headers['HTTP_USER_TOKEN'] }
+    if @cart.update(user_token)
       render json: @cart, status: :ok
     else
       render json: @cart.errors, status: :unprocessable_entity
@@ -35,11 +36,15 @@ class Api::CartsController < ApplicationController
     @cart.destroy
   end
 
-  private
-
-  def cart_params
-    params.permit(:user_token)
+  def checkout
+    cart_service = CartService.new(params[:cart_id])
+    @cart = cart_service.calculations
+    render json: {  total_price: @cart.total_price,
+                    subtotal_price: @cart.subtotal_price,
+                    shipping_price: @cart.subtotal_price }
   end
+
+  private
 
   def set_cart
     @cart = Cart.find(params[:id])
