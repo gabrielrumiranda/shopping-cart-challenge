@@ -19,8 +19,9 @@ To run the tests
 
 #### Cart
 * ``` GET api/carts ``` Retrieves a list of carts
+* ``` GET api/carts/:id/checkout ``` Retrieves subtotal, total and shipping price of cart
 * ``` GET api/carts/:id ``` Retrieves a specific cart
-* ``` POST api/carts/ ``` Create a new cart
+* ``` POST api/carts/ ``` Create a new cart 
 * ``` DELETE /carts/:id ``` Delete a specific cart
 
 #### Products
