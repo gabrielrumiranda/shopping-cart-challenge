@@ -131,10 +131,7 @@ RSpec.describe 'Carts Service' do
         product1.amount = 10
         product1.price = 1
         cart.products << product1
-<<<<<<< HEAD
-=======
         cart_service.calculations
->>>>>>> develop
       end
       it 'returns cart with discount' do
         expect(aplly_coupon.total_price).to eql 7.0
@@ -151,7 +148,6 @@ RSpec.describe 'Carts Service' do
       end
 
       it 'returns cart with discount' do
-        puts aplly_coupon.inspect
         expect(aplly_coupon.total_price).to eql 0
       end
     end

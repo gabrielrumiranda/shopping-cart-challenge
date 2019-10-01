@@ -17,21 +17,11 @@ class CartService
   end
 
   def calculate_sub_total_price
-<<<<<<< HEAD
-    @cart.subtotal_price = 0
-    Product.where(cart_id: @cart.id).each do |product|
-      @cart.subtotal_price += product.amount * product.price
-    end
-    @cart.total_price = @cart.subtotal_price
-    @cart.save
-    @cart.subtotal_price
-=======
     subtotal_price = 0
     Product.where(cart_id: @cart.id).each do |product|
       subtotal_price += product.amount * product.price
     end
     subtotal_price
->>>>>>> develop
   end
 
   def calculate_max_amount
@@ -77,16 +67,10 @@ class CartService
   end
 
   def calculations
-<<<<<<< HEAD
-    calculate_sub_total_price
-    calculate_shipping_price
-    aplly_coupons
-=======
     @cart.subtotal_price = @cart.total_price = calculate_sub_total_price
     @cart.shipping_price = calculate_shipping_price
     aplly_coupons
     @cart.save
->>>>>>> develop
     @cart
   end
 end
