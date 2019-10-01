@@ -83,10 +83,17 @@ RSpec.describe 'Products API' do
         end
 
         it 'amount equal the old amount plus the requested product amount' do
+<<<<<<< HEAD
           product_amount = JSON.parse(response.body)['amount']
           expect_amount = valid_attributes[:amount] + products.first.amount
 
           expect(product_amount).to eql(expect_amount)
+=======
+          product_amount = JSON.parse(response.body)["amount"]
+          expect_amount = product_amount + products.first.amount
+
+          expect(expect_amount).to eql(20 + products.first.amount)
+>>>>>>> develop
         end
       end
     end

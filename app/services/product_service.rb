@@ -14,10 +14,5 @@ class ProductService
       end
       product
     end
-
-    def update_cart_prices(product)
-      cart_service = CartService.new(product.cart_id)
-      cart_service.calculations
-    end
   end
 end

@@ -17,6 +17,7 @@ class CartService
   end
 
   def calculate_sub_total_price
+<<<<<<< HEAD
     @cart.subtotal_price = 0
     Product.where(cart_id: @cart.id).each do |product|
       @cart.subtotal_price += product.amount * product.price
@@ -24,6 +25,13 @@ class CartService
     @cart.total_price = @cart.subtotal_price
     @cart.save
     @cart.subtotal_price
+=======
+    subtotal_price = 0
+    Product.where(cart_id: @cart.id).each do |product|
+      subtotal_price += product.amount * product.price
+    end
+    subtotal_price
+>>>>>>> develop
   end
 
   def calculate_max_amount
@@ -33,18 +41,16 @@ class CartService
   def calculate_shipping_price
     max_amount = calculate_max_amount || 0
     if calculate_sub_total_price >= @cart.free_shipping_limit
-      @cart.shipping_price = 0
+      shipping_price = 0
     elsif max_amount <= SIMPLE_SHIPPING_LIMIT
-      @cart.shipping_price = 30
+      shipping_price = 30
     else
       exceeded_amount = max_amount - SIMPLE_SHIPPING_LIMIT
       shipping_price_aditional = (exceeded_amount / EXCEEDED_AMOUNT_THRESHOLD)
       shipping_price_aditional *= EXCEEDED_AMOUNT_PRICE
       shipping_price = SIMPLE_SHIPPING_PRICE + shipping_price_aditional
-      @cart.shipping_price = shipping_price
     end
-    @cart.save
-    @cart.shipping_price
+    shipping_price
   end
 
   def aplly_coupon(coupon_name)
@@ -71,9 +77,16 @@ class CartService
   end
 
   def calculations
+<<<<<<< HEAD
     calculate_sub_total_price
     calculate_shipping_price
     aplly_coupons
+=======
+    @cart.subtotal_price = @cart.total_price = calculate_sub_total_price
+    @cart.shipping_price = calculate_shipping_price
+    aplly_coupons
+    @cart.save
+>>>>>>> develop
     @cart
   end
 end

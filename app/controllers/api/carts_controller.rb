@@ -41,7 +41,7 @@ class Api::CartsController < ApplicationController
     @cart = cart_service.calculations
     render json: {  total_price: @cart.total_price,
                     subtotal_price: @cart.subtotal_price,
-                    shipping_price: @cart.subtotal_price }
+                    shipping_price: @cart.shipping_price }
   end
 
   private

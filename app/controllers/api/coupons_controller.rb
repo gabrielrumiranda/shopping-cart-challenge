@@ -16,7 +16,6 @@ class Api::CouponsController < ApplicationController
     @coupon = @cart.coupons.create!(coupon_params)
 
     if @coupon.save
-      CartService.new(@coupon.cart_id).calculations
       render json: @coupon, status: :created
     else
       render json: @coupon.errors, status: :unprocessable_entity
@@ -25,7 +24,6 @@ class Api::CouponsController < ApplicationController
 
   def update
     if @coupon.update(coupon_params)
-      CartService.new(@coupon.cart_id).calculations
       render json: @coupon, status: :ok
     else
       render json: @coupon.errors, status: :unprocessable_entity

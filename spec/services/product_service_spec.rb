@@ -44,6 +44,7 @@ RSpec.describe 'Products Service' do
       end
     end
   end
+<<<<<<< HEAD
 
   describe '.update_cart_prices' do
     subject(:update_cart_prices) { ProductService.update_cart_prices(product) }
@@ -62,4 +63,6 @@ RSpec.describe 'Products Service' do
       end
     end
   end
+=======
+>>>>>>> develop
 end
