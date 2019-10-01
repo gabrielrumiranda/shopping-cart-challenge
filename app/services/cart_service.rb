@@ -44,8 +44,6 @@ class CartService
   end
 
   def aplly_coupon(coupon_name)
-    calculate_sub_total_price
-    calculate_shipping_price
     case coupon_name
     when 'A'
       @cart.total_price -= (@cart.subtotal_price * COUPON_A_PERCENTAGE)
